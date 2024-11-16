@@ -8,25 +8,31 @@ class ListaEncadeada:
         self.cabeca = None
 
     def adicionar(self, dado, posicao):
-        #Adiciona um nó com dado na posição especificada
+        # Adiciona um nó com dado na posição especificada
         novo_no = No(dado)
         if posicao == 0:
             novo_no.proximo = self.cabeca
             self.cabeca = novo_no
             return
 
-        #Percorrendo começando pela cabeça
+        # Percorrendo a lista para encontrar a posição válida
         atual = self.cabeca
-        for _ in range(posicao - 1):
-            if atual.proximo is None:
-                break
-            atual = atual.proximo
+        contador = 0
 
+        while atual and contador < posicao - 1:
+            atual = atual.proximo
+            contador += 1
+
+        # Verifica se a posição é válida (se 'atual' existe e está no índice correto)
+        if atual is None:
+            return
+
+        # Inserção do novo nó na posição especificada
         novo_no.proximo = atual.proximo
         atual.proximo = novo_no
 
     def remover(self, dado):
-        #Remove o primeiro nó encontrado com o valor dado
+    # Remove o primeiro nó encontrado com o valor dado
         atual = self.cabeca
         anterior = None
 
@@ -36,9 +42,14 @@ class ListaEncadeada:
                     anterior.proximo = atual.proximo
                 else:
                     self.cabeca = atual.proximo
-                return  # Remove apenas o primeiro encontrado
+
+                # Remove referências ao nó
+                atual.proximo = None  # Remove referência ao próximo nó
+                atual.dado = None  # Remove o dado do nó
+                return  # Sai após remover o nó encontrado
             anterior = atual
             atual = atual.proximo
+
 
     def exibir(self):
         #Exibe a lista encadeada
@@ -53,7 +64,7 @@ def main():
     # Lendo o arquivo
     with open("rsc/arq.txt") as arquivo:
         # Leitura da lista inicial
-        valores_iniciais = list(map(int, arquivo.readline().strip().split()))
+        valores_iniciais = list(map(int, arquivo.readline().split()))
         
         # Criando a lista encadeada e adicionando os elementos iniciais
         lista_encadeada = ListaEncadeada()
@@ -77,6 +88,4 @@ def main():
                 lista_encadeada.remover(numero)
             elif tipo_acao == 'P':
                 lista_encadeada.exibir()
-
-if __name__ == "__main__":
-    main()
+main()
